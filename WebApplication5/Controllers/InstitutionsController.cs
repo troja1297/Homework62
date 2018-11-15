@@ -43,12 +43,21 @@ namespace WebApplication5.Controllers
 
             var institution = await _context.Institution
                 .FirstOrDefaultAsync(m => m.Id == id);
+            var dishes = _context.Dish.Where(m => m.InstitutionId == id);
+            Institution model = new Institution()
+            {
+                Description = institution.Description,
+                Dishes = dishes,
+                Id = institution.Id,
+                PhotoPath = institution.PhotoPath,
+                Title = institution.Title
+            };
             if (institution == null)
             {
                 return NotFound();
             }
 
-            return View(institution);
+            return View(model);
         }
 
         // GET: Institutions/Create
