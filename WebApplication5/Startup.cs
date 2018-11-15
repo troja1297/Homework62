@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication5.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebApplication5.Service;
 
 namespace WebApplication5
 {
@@ -61,6 +62,7 @@ namespace WebApplication5
             });
 
             // using Microsoft.AspNetCore.Identity.UI.Services;
+            services.AddSingleton<FileUploadService>();
             services.AddSingleton<IEmailSender, EmailSender>();
         }
 
@@ -88,7 +90,7 @@ namespace WebApplication5
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Institutions}/{action=Index}/{id?}");
             });
         }
     }

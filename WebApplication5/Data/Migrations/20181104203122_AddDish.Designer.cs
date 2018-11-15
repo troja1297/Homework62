@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication5.Data;
 
 namespace WebApplication5.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181104203122_AddDish")]
+    partial class AddDish
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,7 +191,7 @@ namespace WebApplication5.Data.Migrations
                     b.Property<string>("Description")
                         .IsRequired();
 
-                    b.Property<int>("InstitutionId");
+                    b.Property<int?>("InstitutionId");
 
                     b.Property<string>("Name")
                         .IsRequired();
@@ -270,10 +272,9 @@ namespace WebApplication5.Data.Migrations
 
             modelBuilder.Entity("WebApplication5.Models.Dish", b =>
                 {
-                    b.HasOne("WebApplication5.Models.Institution", "Institution")
+                    b.HasOne("WebApplication5.Models.Institution")
                         .WithMany("Dishes")
-                        .HasForeignKey("InstitutionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("InstitutionId");
                 });
 #pragma warning restore 612, 618
         }

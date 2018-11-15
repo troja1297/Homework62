@@ -12,5 +12,7 @@ namespace WebApplication5.Data
             : base(options)
         {
         }
+        public DbSet<WebApplication5.Models.Institution> Institution { get; set; }
+        public DbSet<WebApplication5.Models.Dish> Dish { get; set; }
     }
 }
