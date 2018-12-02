@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using WebApplication5.Data;
 using WebApplication5.Models;
 using WebApplication5.Models.ViewModels;
@@ -13,15 +15,33 @@ using WebApplication5.Service;
 
 namespace WebApplication5.Controllers
 {
+
+    public static class CacheKeys
+    {
+        public static string Entry { get { return "_Entry"; } }
+        public static string CallbackEntry { get { return "_Callback"; } }
+        public static string CallbackMessage { get { return "_CallbackMessage"; } }
+        public static string Parent { get { return "_Parent"; } }
+        public static string Child { get { return "_Child"; } }
+        public static string DependentMessage { get { return "_DependentMessage"; } }
+        public static string DependentCTS { get { return "_DependentCTS"; } }
+        public static string Ticks { get { return "_Ticks"; } }
+        public static string CancelMsg { get { return "_CancelMsg"; } }
+        public static string CancelTokenSource { get { return "_CancelTokenSource"; } }
+    }
+
     public class InstitutionsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly FileUploadService _fileUploadService;
         private IHostingEnvironment _environment;
+        private IMemoryCache _cache;
+        private IMemoryCache _memoryCache;
 
         public InstitutionsController(ApplicationDbContext context, FileUploadService fileUploadService,
-            IHostingEnvironment environment)
+            IHostingEnvironment environment, IMemoryCache memoryCache)
         {
+            _cache = memoryCache;
             _environment = environment;
             _context = context;
             _fileUploadService = fileUploadService;
@@ -89,6 +109,18 @@ namespace WebApplication5.Controllers
             return View();
         }
 
+        public async Task<IActionResult> CacheGetOrCreateAsync()
+        {
+            var cacheEntry = await
+                _cache.GetOrCreateAsync(CacheKeys.Entry, entry =>
+                {
+                    entry.SlidingExpiration = TimeSpan.FromSeconds(3);
+                    return Task.FromResult(DateTime.Now);
+                });
+
+            return View("Cache", cacheEntry);
+        }
+
         // POST: Institutions/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -115,6 +147,7 @@ namespace WebApplication5.Controllers
             }
             return View(model);
         }
+
 
         // GET: Institutions/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -183,6 +216,18 @@ namespace WebApplication5.Controllers
             }
 
             return View(institution);
+        }
+
+        public string AddToTrash(int dishId)
+        {
+            Dish dish = _context.Dish.FirstOrDefault(t => t.Id == dishId);
+
+            List<string> diList = new List<string>();
+            diList.Add(dish.Name);
+            diList.Add(dish.Price.ToString());
+            string dishJson = JsonConvert.SerializeObject(diList);
+
+            return dishJson;
         }
 
         // POST: Institutions/Delete/5

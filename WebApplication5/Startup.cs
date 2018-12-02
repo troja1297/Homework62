@@ -62,6 +62,7 @@ namespace WebApplication5
             });
 
             // using Microsoft.AspNetCore.Identity.UI.Services;
+            services.AddMemoryCache();
             services.AddSingleton<FileUploadService>();
             services.AddSingleton<IEmailSender, EmailSender>();
         }

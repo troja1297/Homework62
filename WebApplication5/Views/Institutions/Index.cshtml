@@ -10,10 +10,23 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<div class="d-flex flex-row justify-content-between">
+<div class="d-flex flex-row justify-content-between" style="display: flex;">
     @foreach (var item in Model) {
-        <div class="card" style="width: 18rem; display: inline-block;">
-            <img class="card-img-top" src="@item.PhotoPath" style="width: 100%; " alt="Card image cap">
+
+        <div class="card" style="width: 22rem;">
+            <img class="card-img-top" src="@item.PhotoPath" style="width: 21rem; height: 22rem; "  alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+            </div>
+            <div class="card-body">
+                <a asp-action="Edit" class="btn btn-primary card-link" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" class="btn btn-primary card-link" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" class="btn btn-primary card-link" asp-route-id="@item.Id">Delete</a>
+            </div>
+        </div>
+        @*<div class="card" style="width: 220px; display: inline-block;">
+            <img class="card-img-top" src="@item.PhotoPath" style="width: 200px; height: 200px; " alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
                 <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
@@ -21,7 +34,7 @@
                 <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" class="btn btn-primary" asp-route-id="@item.Id">Delete</a>
             </div>
-        </div>
+        </div>*@
     } 
 </div>
 

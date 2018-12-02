@@ -8,26 +8,54 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Institution</h4>
+    <h4>@Model.Title</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            <img class="card-img-top" src="@Model.PhotoPath" style="width: 100%; " alt="Card image cap">
-        </dt>
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
+    <div style="flex-wrap: wrap; display: flex; justify-content: space-between;">
+        <div>
+            <div>
+                <img class="card-img-top" src="@Model.PhotoPath" style="width: 200px; height: 200px; " alt="Card image cap">
+            </div>
+            <div>
+                <div style="font-weight: bold">
+                    @Html.DisplayNameFor(model => model.Title)
+                </div>
+                <div>
+                    @Html.DisplayFor(model => model.Title)
+                </div>
+            </div>
+            <div>
+                <div  style="font-weight: bold">
+                    @Html.DisplayNameFor(model => model.Description)
+                </div>
+                <div>
+                    @Html.DisplayFor(model => model.Description)
+                </div>
+            </div>
+        </div>
+        <div style="display: grid;">
+            <div><h3>Trash</h3></div>
+            <div style="display: inline-flex;">
+                <div>
+                    <div>Title</div>
+                    <div id="name"></div>
+                </div>
+                <div style="padding-left: 64px;">
+                    <div>Price</div>
+                    <div id="price"></div>
+                </div>
+            </div>
+            <div style="display: inline-flex; font-weight: bold;">
+                <div>
+                    <div>Итого: </div>
+                </div>
+                <div>
+                    <div id="total"></div>
+                </div>
+            </div>
+        </div>
 
-    </dl>
+    </div>
+
     <table class="table">
         <thead>
         <tr>
@@ -43,7 +71,8 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.Dishes) {
+        @foreach (var item in Model.Dishes)
+        {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
@@ -54,13 +83,72 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
+                <td>
+                    <form asp-controller="Institutions" asp-action="AddToTrash" method="post" style="display: inline;">
+                        <input type="button" value="AddToTrash" onclick="AddDishToTrash('@item.Id')"/>
+                    </form>
+                </td>
             </tr>
         }
         </tbody>
     </table>
 </div>
+
+
+<script>
+    var array = [];
+    var price = 0;
+    var instId = "@Model.Id"
+    
+    window.onload = function() {
+        var data = JSON.parse(localStorage.getItem('dishInTrash' + instId.toString()));
+        array = data;
+        console.log(array.toString());
+        array.forEach(function (element) {
+            var a = element.split("\",\"");
+            $('<p>' + a[0].replace("[\"", "") + '</p>').appendTo("#name");
+            $('<p>' + a[1].replace("\"]", "") + '</p>').appendTo("#price");
+
+            price += Number(a[1].replace("\"]", ""));
+
+            $("#total").text(price);
+        })
+    };
+
+    function AddDishToTrash(dishId) {
+        $.ajax({
+            url: '@Url.Action("AddToTrash", "Institutions")',
+            type: 'POST',
+            contentTtpe: "application/json",
+            data: { 'dishId': dishId },
+            success: function(data) {
+                AddToLocalStorage(data);
+            }
+        });
+    }
+
+    function AddToLocalStorage(data) {
+        var myData = JSON.parse(data);
+
+        $('<p>' + myData[0] + '</p>').appendTo("#name");
+        $('<p>' + myData[1] + '</p>').appendTo("#price");
+        price += Number(myData[1]);
+        array.push(data);
+        $("#total").text(price);
+    }
+
+
+    function Save() {
+        localStorage.setItem('dishInTrash'+instId.toString(), JSON.stringify(array));
+        var data = JSON.parse(localStorage.getItem('dishInTrash'));
+    }
+
+    window.onbeforeunload = Save;
+        
+
+
+</script>
 <div>
-    <a asp-action="CreateDish" asp-route-id="@Model">Create</a> |
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
