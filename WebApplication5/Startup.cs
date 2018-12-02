@@ -14,6 +14,9 @@ using WebApplication5.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApplication5.Service;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace WebApplication5
 {
@@ -41,6 +44,11 @@ namespace WebApplication5
                     Configuration.GetConnectionString("DefaultConnection")));
 
 
+            // Localization
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.AddMvc().AddDataAnnotationsLocalization().AddViewLocalization();
+            services.AddMvc().AddViewLocalization();
+
             services.AddIdentity<IdentityUser, IdentityRole>()
                 // services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -61,7 +69,6 @@ namespace WebApplication5
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
 
-            // using Microsoft.AspNetCore.Identity.UI.Services;
             services.AddMemoryCache();
             services.AddSingleton<FileUploadService>();
             services.AddSingleton<IEmailSender, EmailSender>();
@@ -70,6 +77,20 @@ namespace WebApplication5
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var supportedCultures = new[]
+            {
+               
+                new CultureInfo("en"),
+                new CultureInfo("ru"),
+                new CultureInfo("de")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("ru"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

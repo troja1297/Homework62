@@ -1,40 +1,34 @@
 ﻿@model IEnumerable<WebApplication5.Models.Institution>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>@Localizer["INSTITUTION"]</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@Localizer["CREATENEW"]</a>
 </p>
+
 <div class="d-flex flex-row justify-content-between" style="display: flex;">
-    @foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
 
         <div class="card" style="width: 22rem;">
-            <img class="card-img-top" src="@item.PhotoPath" style="width: 21rem; height: 22rem; "  alt="Card image cap">
+            <img class="card-img-top" src="@item.PhotoPath" style="width: 21rem; height: 22rem; " alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
                 <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
             </div>
             <div class="card-body">
-                <a asp-action="Edit" class="btn btn-primary card-link" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" class="btn btn-primary card-link" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" class="btn btn-primary card-link" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" class="btn btn-primary card-link" asp-route-id="@item.Id">@Localizer["EDIT"]</a> |
+                <a asp-action="Details" class="btn btn-primary card-link" asp-route-id="@item.Id">@Localizer["DETAILS"]</a> |
+                <a asp-action="Delete" class="btn btn-primary card-link" asp-route-id="@item.Id">@Localizer["DELETE"]</a>
             </div>
         </div>
-        @*<div class="card" style="width: 220px; display: inline-block;">
-            <img class="card-img-top" src="@item.PhotoPath" style="width: 200px; height: 200px; " alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-                <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
-                <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" class="btn btn-primary" asp-route-id="@item.Id">Delete</a>
-            </div>
-        </div>*@
-    } 
+    }
 </div>
 

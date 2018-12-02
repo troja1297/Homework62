@@ -4,9 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using WebApplication5.Data;
 using WebApplication5.Models;
@@ -36,20 +39,35 @@ namespace WebApplication5.Controllers
         private readonly FileUploadService _fileUploadService;
         private IHostingEnvironment _environment;
         private IMemoryCache _cache;
-        private IMemoryCache _memoryCache;
+        private readonly IStringLocalizer<Institution> _localizer;
 
         public InstitutionsController(ApplicationDbContext context, FileUploadService fileUploadService,
-            IHostingEnvironment environment, IMemoryCache memoryCache)
+            IHostingEnvironment environment, IMemoryCache memoryCache, IStringLocalizer<Institution> localizer)
         {
+            _localizer = localizer;
             _cache = memoryCache;
             _environment = environment;
             _context = context;
             _fileUploadService = fileUploadService;
         }
 
+
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return LocalRedirect(returnUrl);
+        }
+
         // GET: Institutions
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.Institution.ToListAsync());
         }
 

@@ -96,14 +96,15 @@
 
 
 <script>
-    var array = [];
     var price = 0;
-    var instId = "@Model.Id"
-    
-    window.onload = function() {
+    var instId = "@Model.Id";
+
+
+    var array = [];
+
+    window.onload = function () {
         var data = JSON.parse(localStorage.getItem('dishInTrash' + instId.toString()));
         array = data;
-        console.log(array.toString());
         array.forEach(function (element) {
             var a = element.split("\",\"");
             $('<p>' + a[0].replace("[\"", "") + '</p>').appendTo("#name");
@@ -123,24 +124,25 @@
             data: { 'dishId': dishId },
             success: function(data) {
                 AddToLocalStorage(data);
+                array = array || [];
+                array.push(data);
             }
         });
     }
 
     function AddToLocalStorage(data) {
         var myData = JSON.parse(data);
-
         $('<p>' + myData[0] + '</p>').appendTo("#name");
         $('<p>' + myData[1] + '</p>').appendTo("#price");
         price += Number(myData[1]);
-        array.push(data);
+        
+        console.log(array);
         $("#total").text(price);
     }
 
 
     function Save() {
         localStorage.setItem('dishInTrash'+instId.toString(), JSON.stringify(array));
-        var data = JSON.parse(localStorage.getItem('dishInTrash'));
     }
 
     window.onbeforeunload = Save;
