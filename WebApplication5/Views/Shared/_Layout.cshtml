@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,7 +33,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-controller="Dishes" asp-action="Index">Dishes</a></li>
+                    <li><a asp-controller="Dishes" asp-action="Index">@Localizer["DISH"]</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
