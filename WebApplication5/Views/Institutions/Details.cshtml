@@ -1,11 +1,13 @@
 ﻿@model WebApplication5.Models.Institution
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Details</h2>
 
 <div>
     <h4>@Model.Title</h4>
@@ -17,15 +19,15 @@
             </div>
             <div>
                 <div style="font-weight: bold">
-                    @Html.DisplayNameFor(model => model.Title)
+                    @Localizer["TITLE"]
                 </div>
                 <div>
                     @Html.DisplayFor(model => model.Title)
                 </div>
             </div>
             <div>
-                <div  style="font-weight: bold">
-                    @Html.DisplayNameFor(model => model.Description)
+                <div style="font-weight: bold">
+                    @Localizer["DESCRIPTION"]
                 </div>
                 <div>
                     @Html.DisplayFor(model => model.Description)
@@ -33,20 +35,20 @@
             </div>
         </div>
         <div style="display: grid;">
-            <div><h3>Trash</h3></div>
+            <div><h3>@Localizer["BASKET"]</h3></div>
             <div style="display: inline-flex;">
                 <div>
-                    <div>Title</div>
+                    <div>@Localizer["TITLE"]</div>
                     <div id="name"></div>
                 </div>
                 <div style="padding-left: 64px;">
-                    <div>Price</div>
+                    <div>@Localizer["DESCRIPTION"]</div>
                     <div id="price"></div>
                 </div>
             </div>
             <div style="display: inline-flex; font-weight: bold;">
                 <div>
-                    <div>Итого: </div>
+                    <div>@Localizer["TOTAL"]</div>
                 </div>
                 <div>
                     <div id="total"></div>
@@ -58,38 +60,38 @@
 
     <table class="table">
         <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Dishes.GetEnumerator().Current.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dishes.GetEnumerator().Current.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dishes.GetEnumerator().Current.Price)
-            </th>
-        </tr>
+            <tr>
+                <th>
+                    @Localizer["TITLE"]
+                </th>
+                <th>
+                    @Localizer["DESCRIPTION"]
+                </th>
+                <th>
+                    @Localizer["PRICE"]
+                </th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.Dishes)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    <form asp-controller="Institutions" asp-action="AddToTrash" method="post" style="display: inline;">
-                        <input type="button" value="AddToTrash" onclick="AddDishToTrash('@item.Id')"/>
-                    </form>
-                </td>
-            </tr>
-        }
+            @foreach (var item in Model.Dishes)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        <form asp-controller="Institutions" asp-action="AddToTrash" method="post" style="display: inline;">
+                            <input type="button" value="@Localizer["ADDTOBASKET"]" onclick="AddDishToTrash('@item.Id')" />
+                        </form>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
@@ -135,7 +137,7 @@
         $('<p>' + myData[0] + '</p>').appendTo("#name");
         $('<p>' + myData[1] + '</p>').appendTo("#price");
         price += Number(myData[1]);
-        
+
         console.log(array);
         $("#total").text(price);
     }
@@ -146,7 +148,7 @@
     }
 
     window.onbeforeunload = Save;
-        
+
 
 
 </script>
